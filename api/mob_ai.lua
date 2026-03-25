@@ -1835,7 +1835,7 @@ animalia.mob_ai.tamed_follow_owner = {
 }
 
 animalia.mob_ai.tamed_stay = {
-	utility = "animalia:basic_idle",
+	utility = "animalia:stay",
 	step_delay = 0.25,
 	get_score = function(self)
 		local order = self.order or "wander"
@@ -2091,9 +2091,9 @@ end)
 
 creatura.register_utility("animalia:stay", function(self)
 	local function func(mob)
-		if not mob:get_action() then
-			creatura.action_idle(mob, 10, "sit")
-		end
+		mob:set_gravity(-9.8)
+		mob:halt()
+		mob:animate("sit")
 	end
 	self:set_utility(func)
 end)
