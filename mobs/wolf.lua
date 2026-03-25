@@ -8,7 +8,14 @@ local follow = {
 	"animalia:mutton_raw",
 	"animalia:beef_raw",
 	"animalia:porkchop_raw",
-	"animalia:poultry_raw"
+	"animalia:poultry_raw",
+
+	-- Mineclonia / MineClone2 items
+    "mcl_mobitems:beef",
+    "mcl_mobitems:chicken",
+    "mcl_mobitems:porkchop",
+    "mcl_mobitems:mutton",
+    "mcl_mobitems:rabbit"
 }
 
 if minetest.get_modpath("bonemeal")
@@ -18,7 +25,14 @@ or minetest.get_modpath("bonified") then
 		"animalia:beef_raw",
 		"animalia:porkchop_raw",
 		"animalia:mutton_raw",
-		"animalia:poultry_raw"
+		"animalia:poultry_raw",
+		
+		-- Mineclonia / MineClone2 items
+        "mcl_mobitems:beef",
+        "mcl_mobitems:chicken",
+        "mcl_mobitems:porkchop",
+        "mcl_mobitems:mutton",
+        "mcl_mobitems:rabbit"
 	}
 end
 
