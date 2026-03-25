@@ -1667,7 +1667,7 @@ creatura.register_utility("animalia:tamed_follow_owner", function(self, player)
 			local dist = vec_dist(pos, target_pos)
 
 			if dist > mob.width + 1 then
-				animalia.action_pursue(mob, owner)
+				animalia.action_pursue(mob, owner, 4, nil, 1, "run")
 			else
 				creatura.action_idle(mob, 1)
 			end
@@ -2068,3 +2068,32 @@ animalia.mob_ai.rat_seek_chest = {
 		return 0
 	end
 }
+
+creatura.register_utility("animalia:follow_player", function(self, player)
+	local function func(mob)
+		local owner = player or (mob.owner and minetest.get_player_by_name(mob.owner))
+		if not owner then return true end
+
+		local pos, target_pos = mob.object:get_pos(), owner:get_pos()
+		if not pos or not target_pos then return true end
+
+		if not mob:get_action() then
+			local dist = vec_dist(pos, target_pos)
+			if dist > mob.width + 1 then
+				animalia.action_pursue(mob, owner, 4, nil, 1, "run")
+			else
+				creatura.action_idle(mob, 1)
+			end
+		end
+	end
+	self:set_utility(func)
+end)
+
+creatura.register_utility("animalia:stay", function(self)
+	local function func(mob)
+		if not mob:get_action() then
+			creatura.action_idle(mob, 10, "sit")
+		end
+	end
+	self:set_utility(func)
+end)
