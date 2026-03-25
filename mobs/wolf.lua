@@ -9,13 +9,6 @@ local follow = {
 	"animalia:beef_raw",
 	"animalia:porkchop_raw",
 	"animalia:poultry_raw",
-
-	-- Mineclonia / MineClone2 items
-    "mcl_mobitems:beef",
-    "mcl_mobitems:chicken",
-    "mcl_mobitems:porkchop",
-    "mcl_mobitems:mutton",
-    "mcl_mobitems:rabbit"
 }
 
 if minetest.get_modpath("bonemeal")
@@ -26,14 +19,16 @@ or minetest.get_modpath("bonified") then
 		"animalia:porkchop_raw",
 		"animalia:mutton_raw",
 		"animalia:poultry_raw",
-		
-		-- Mineclonia / MineClone2 items
-        "mcl_mobitems:beef",
-        "mcl_mobitems:chicken",
-        "mcl_mobitems:porkchop",
-        "mcl_mobitems:mutton",
-        "mcl_mobitems:rabbit"
 	}
+end
+
+-- Mineclonia
+if minetest.get_modpath("mcl_mobitems") then
+	table.insert(follow, "mcl_mobitems:beef")
+	table.insert(follow, "mcl_mobitems:chicken")
+	table.insert(follow, "mcl_mobitems:porkchop")
+	table.insert(follow, "mcl_mobitems:mutton")
+	table.insert(follow, "mcl_mobitems:rabbit")
 end
 
 local function is_value_in_table(tbl, val)

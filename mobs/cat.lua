@@ -3,7 +3,7 @@
 ---------
 
 local follow = {
-	"animalia:poultry_raw"
+	"animalia:poultry_raw",
 }
 
 if minetest.registered_items["ethereal:fish_raw"] then
@@ -11,6 +11,11 @@ if minetest.registered_items["ethereal:fish_raw"] then
 		"ethereal:fish_raw",
 		"animalia:poultry_raw"
 	}
+end
+
+if minetest.get_modpath("mcl_mobitems") then
+	table.insert(follow, "mcl_fishing:fish_raw")
+	table.insert(follow, "mcl_mobitems:chicken")
 end
 
 creatura.register_mob("animalia:cat", {
