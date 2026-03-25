@@ -290,7 +290,8 @@ creatura.register_mob("animalia:horse", {
 			self.drops = {
 				{name = "animalia:leather", chance = 2, min = 1, max = 4}
 			}
-			minetest.add_item(pos, "animalia:saddle")
+			local drop_saddle = minetest.get_modpath("mcl_mobitems") and "mcl_mobitems:saddle" or "animalia:saddle"
+			minetest.add_item(pos, drop_saddle)
 		end
 	end,
 
@@ -379,7 +380,7 @@ creatura.register_mob("animalia:horse", {
 
 		local wielded_name = clicker:get_wielded_item():get_name()
 
-		if wielded_name == "animalia:saddle" then
+		if wielded_name == "animalia:saddle" or wielded_name == "mcl_mobitems:saddle" then
 			self:set_saddle(true)
 			return
 		end

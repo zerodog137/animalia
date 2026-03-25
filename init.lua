@@ -195,7 +195,12 @@ if convert_mobs_redo then
 	minetest.register_alias_force("mobs:lasso", "animalia:lasso")
 	minetest.register_alias_force("mobs:net", "animalia:net")
 	minetest.register_alias_force("mobs:shears", "animalia:shears")
-	minetest.register_alias_force("mobs:saddles", "animalia:saddles")
+
+	-- Mineclonia Compatibility
+	if minetest.get_modpath("mcl_mobitems") then
+		minetest.register_alias_force("animalia:saddle", "mcl_mobitems:saddle")
+	end
+
 	minetest.register_alias_force("mobs:nametag", "animalia:nametag")
 end
 
