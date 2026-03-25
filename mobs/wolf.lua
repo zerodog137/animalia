@@ -71,6 +71,7 @@ creatura.register_mob("animalia:wolf", {
 		sit = {range = {x = 130, y = 139}, speed = 10, frame_blend = 0.3, loop = true},
 	},
 	follow = follow,
+	fancy_collide = true,
 
 	-- Behavior Parameters
 	is_skittish_mob = true,
