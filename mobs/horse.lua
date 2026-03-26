@@ -218,7 +218,7 @@ creatura.register_mob("animalia:horse", {
 	drops = {
 		{name = "animalia:leather", min = 1, max = 4, chance = 2}
 	},
-	fancy_collide = false,
+	fancy_collide = true,
 
 	-- Behavior Parameters
 	is_grazing_mob = true,
