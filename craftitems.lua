@@ -15,6 +15,34 @@ local function correct_name(str)
 	end
 end
 
+-- Helper to register MCL-compatible food
+local function register_mcl_meat(name, desc, img, hunger, sat)
+	minetest.register_craftitem(name, {
+		description = tostring(desc), -- Force string to fix doc_items crash
+		inventory_image = img,
+		groups = {
+			food = hunger, 
+			saturation = sat, 
+			eatable = 1, 
+			flammable = 2, 
+			meat = 1, 
+			food_meat = 1
+		},
+		on_secondary_use = function(itemstack, user, pointed_thing)
+			if not user or not user:is_player() then return itemstack end
+			
+			-- Only eat if NOT full (MCL style)
+			local h = mcl_hunger.get_hunger(user)
+			if h >= 20 then return itemstack end
+			
+			-- This triggers the MCL hold-to-eat animation and sound
+			return minetest.item_eat(hunger)(itemstack, user, pointed_thing)
+		end,
+		-- Disable instant eating on left click
+		on_use = function(itemstack, user, pointed_thing) return itemstack end,
+	})
+end
+
 local function register_egg(name, def)
 
 	minetest.register_entity(def.mob .. "_egg_entity", {
@@ -101,8 +129,12 @@ local function register_egg(name, def)
 	minetest.register_craftitem(name .. "_fried", {
 		description = "Fried " .. def.description,
 		inventory_image = def.inventory_image .. "_fried.png",
-		on_use = minetest.item_eat(4),
-		groups = {food_egg = 1, flammable = 2},
+		groups = {food_egg = 1, flammable = 2, food = 4, eatable = 1},
+		on_secondary_use = function(itemstack, user, pointed_thing)
+			if mcl_hunger.get_hunger(user) >= 20 then return itemstack end
+			return minetest.item_eat(4)(itemstack, user, pointed_thing)
+		end,
+		on_use = function(itemstack) return itemstack end,
 	})
 
 	minetest.register_craft({
@@ -174,127 +206,18 @@ minetest.register_craftitem("animalia:pelt_bear", {
 	groups = {flammable = 2, pelt = 1},
 })
 
--- Meat --
-
-minetest.register_craftitem("animalia:beef_raw", {
-	description = "Raw Beef",
-	inventory_image = "animalia_beef_raw.png",
-	on_use = minetest.item_eat(1),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craftitem("animalia:beef_cooked", {
-	description = "Steak",
-	inventory_image = "animalia_beef_cooked.png",
-	on_use = minetest.item_eat(8),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craft({
-	type  =  "cooking",
-	recipe  = "animalia:beef_raw",
-	output = "animalia:beef_cooked",
-})
-
-minetest.register_craftitem("animalia:mutton_raw", {
-	description = "Raw Mutton",
-	inventory_image = "animalia_mutton_raw.png",
-	on_use = minetest.item_eat(1),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craftitem("animalia:mutton_cooked", {
-	description = "Cooked Mutton",
-	inventory_image = "animalia_mutton_cooked.png",
-	on_use = minetest.item_eat(6),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craft({
-	type  =  "cooking",
-	recipe  = "animalia:mutton_raw",
-	output = "animalia:mutton_cooked",
-})
-
-minetest.register_craftitem("animalia:rat_raw", {
-	description = "Raw Rat",
-	inventory_image = "animalia_rat_raw.png",
-	on_use = minetest.item_eat(1),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craftitem("animalia:rat_cooked", {
-	description = "Cooked Rat",
-	inventory_image = "animalia_rat_cooked.png",
-	on_use = minetest.item_eat(2),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craft({
-	type  =  "cooking",
-	recipe  = "animalia:rat_raw",
-	output = "animalia:rat_cooked",
-})
-
-minetest.register_craftitem("animalia:porkchop_raw", {
-	description = "Raw Porkchop",
-	inventory_image = "animalia_porkchop_raw.png",
-	on_use = minetest.item_eat(1),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craftitem("animalia:porkchop_cooked", {
-	description = "Cooked Porkchop",
-	inventory_image = "animalia_porkchop_cooked.png",
-	on_use = minetest.item_eat(7),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craft({
-	type  =  "cooking",
-	recipe  = "animalia:porkchop_raw",
-	output = "animalia:porkchop_cooked",
-})
-
-minetest.register_craftitem("animalia:poultry_raw", {
-	description = "Raw Poultry",
-	inventory_image = "animalia_poultry_raw.png",
-	on_use = minetest.item_eat(1),
-	groups = {flammable = 2, meat = 1, food_meat = 1, food_chicken_raw = 1},
-})
-
-minetest.register_craftitem("animalia:poultry_cooked", {
-	description = "Cooked Poultry",
-	inventory_image = "animalia_poultry_cooked.png",
-	on_use = minetest.item_eat(6),
-	groups = {flammable = 2, meat = 1, food_meat = 1, food_chicken_cooked = 1},
-})
-
-minetest.register_craft({
-	type  =  "cooking",
-	recipe  = "animalia:poultry_raw",
-	output = "animalia:poultry_cooked",
-})
-
-minetest.register_craftitem("animalia:venison_raw", {
-	description = "Raw Venison",
-	inventory_image = "animalia_venison_raw.png",
-	on_use = minetest.item_eat(1),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craftitem("animalia:venison_cooked", {
-	description = "Venison Steak",
-	inventory_image = "animalia_venison_cooked.png",
-	on_use = minetest.item_eat(10),
-	groups = {flammable = 2, meat = 1, food_meat = 1},
-})
-
-minetest.register_craft({
-	type  =  "cooking",
-	recipe  = "animalia:venison_raw",
-	output = "animalia:venison_cooked",
-})
+register_mcl_meat("animalia:beef_raw", "Raw Beef", "animalia_beef_raw.png", 3, 1.8)
+register_mcl_meat("animalia:beef_cooked", "Steak", "animalia_beef_cooked.png", 8, 12.8)
+register_mcl_meat("animalia:mutton_raw", "Raw Mutton", "animalia_mutton_raw.png", 2, 1.2)
+register_mcl_meat("animalia:mutton_cooked", "Cooked Mutton", "animalia_mutton_cooked.png", 6, 9.6)
+register_mcl_meat("animalia:porkchop_raw", "Raw Porkchop", "animalia_porkchop_raw.png", 3, 1.8)
+register_mcl_meat("animalia:porkchop_cooked", "Cooked Porkchop", "animalia_porkchop_cooked.png", 8, 12.8)
+register_mcl_meat("animalia:poultry_raw", "Raw Poultry", "animalia_poultry_raw.png", 2, 1.2)
+register_mcl_meat("animalia:poultry_cooked", "Cooked Poultry", "animalia_poultry_cooked.png", 6, 7.2)
+register_mcl_meat("animalia:venison_raw", "Raw Venison", "animalia_venison_raw.png", 3, 1.8)
+register_mcl_meat("animalia:venison_cooked", "Venison Steak", "animalia_venison_cooked.png", 10, 14.0)
+register_mcl_meat("animalia:rat_raw", "Raw Rat", "animalia_rat_raw.png", 1, 0.6)
+register_mcl_meat("animalia:rat_cooked", "Cooked Rat", "animalia_rat_cooked.png", 4, 6.0)
 
 register_egg("animalia:chicken_egg", {
 	description = "Chicken Egg",
@@ -317,36 +240,12 @@ register_egg("animalia:song_bird_egg", {
 -- Hunger support --
 
 if minetest.get_modpath("hunger_ng") then
-	hunger_ng.add_hunger_data("animalia:beef_raw", {satiates = 1, heals = -1})
-	hunger_ng.add_hunger_data("animalia:beef_cooked", {satiates = 8})
-	hunger_ng.add_hunger_data("animalia:mutton_raw", {satiates = 1, heals = -1})
-	hunger_ng.add_hunger_data("animalia:mutton_cooked", {satiates = 6})
-	hunger_ng.add_hunger_data("animalia:rat_raw", {satiates = 1, heals = -2})
-	hunger_ng.add_hunger_data("animalia:rat_cooked", {satiates = 4})
-	hunger_ng.add_hunger_data("animalia:porkchop_raw", {satiates = 1, heals = -1})
-	hunger_ng.add_hunger_data("animalia:porkchop_cooked", {satiates = 8})
-	hunger_ng.add_hunger_data("animalia:poultry_raw", {satiates = 1, heals = -1})
-	hunger_ng.add_hunger_data("animalia:poultry_cooked", {satiates = 3})
-	hunger_ng.add_hunger_data("animalia:venison_raw", {satiates = 1, heals = -2})
-	hunger_ng.add_hunger_data("animalia:venison_cooked", {satiates = 8})
 	hunger_ng.add_hunger_data("animalia:chicken_egg_fried", {satiates = 4})
 	hunger_ng.add_hunger_data("animalia:song_bird_egg_fried", {satiates = 4})
 	hunger_ng.add_hunger_data("animalia:turkey_egg_fried", {satiates = 4})
 end
 
 if minetest.get_modpath("hbhunger") then
-	hbhunger.register_food("animalia:beef_raw", 1, "", 0, -1)
-	hbhunger.register_food("animalia:beef_cooked", 12)
-	hbhunger.register_food("animalia:mutton_raw", 1, "", 0, -1)
-	hbhunger.register_food("animalia:mutton_cooked", 9)
-	hbhunger.register_food("animalia:rat_raw", 1, "", 0, -1)
-	hbhunger.register_food("animalia:rat_cooked", 6)
-	hbhunger.register_food("animalia:porkchop_raw", 1, "", 0, -1)
-	hbhunger.register_food("animalia:porkchop_cooked", 12)
-	hbhunger.register_food("animalia:poultry_raw", 1, "", 0, -1)
-	hbhunger.register_food("animalia:poultry_cooked", 9)
-	hbhunger.register_food("animalia:venison_raw", 1, "", 0, -1)
-	hbhunger.register_food("animalia:venison_cooked", 12)
 	hbhunger.register_food("animalia:chicken_egg_fried", 6)
 	hbhunger.register_food("animalia:song_bird_egg_fried", 6)
 	hbhunger.register_food("animalia:turkey_egg_fried", 6)
@@ -360,7 +259,8 @@ minetest.register_craftitem("animalia:bucket_milk", {
 	description = "Bucket of Milk",
 	inventory_image = "animalia_milk_bucket.png",
 	stack_max = 1,
-	on_use = minetest.item_eat(8, "bucket:bucket_empty"),
+	on_secondary_use = minetest.item_eat(8, "bucket:bucket_empty"),
+	on_place = minetest.item_eat(8, "bucket:bucket_empty"),
 	groups = {food_milk = 1, flammable = 3},
 })
 
