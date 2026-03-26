@@ -378,18 +378,25 @@ creatura.register_mob("animalia:horse", {
 			return
 		end
 
-		local wielded_name = clicker:get_wielded_item():get_name()
+		local itemstack = clicker:get_wielded_item()
+		local wielded_name = itemstack:get_name()
 
+		-- Saddle logic (Takes the item from player now)
 		if wielded_name == "animalia:saddle" or wielded_name == "mcl_mobitems:saddle" then
 			self:set_saddle(true)
+			if not minetest.is_creative_enabled(name) then
+				itemstack:take_item()
+				clicker:set_wielded_item(itemstack)
+			end
 			return
 		end
 
+		-- Allowing riding with items (uses "else" instead of checking for empty hands)
 		if clicker:get_player_control().sneak
 		and owner then
 			minetest.show_formspec(name, "animalia:horse_forms", get_form(self, name))
 			form_obj[name] = self.object
-		elseif wielded_name == "" then
+		else
 			animalia.mount(self, clicker, {rot = {x = -65, y = 180, z = 0}, pos = {x = 0, y = 0.75, z = 0.6}})
 			if self.saddled then
 				self:initiate_utility("animalia:mount", self, clicker)
