@@ -18,28 +18,17 @@ end
 -- Helper to register MCL-compatible food
 local function register_mcl_meat(name, desc, img, hunger, sat)
 	minetest.register_craftitem(name, {
-		description = tostring(desc), -- Force string to fix doc_items crash
+		description = tostring(desc),
 		inventory_image = img,
+		_mcl_saturation = sat,
 		groups = {
-			food = hunger, 
+			food = 2, -- solid food in mcl
 			saturation = sat, 
-			eatable = 1, 
+			eatable = hunger,
 			flammable = 2, 
 			meat = 1, 
 			food_meat = 1
-		},
-		on_secondary_use = function(itemstack, user, pointed_thing)
-			if not user or not user:is_player() then return itemstack end
-			
-			-- Only eat if NOT full (MCL style)
-			local h = mcl_hunger.get_hunger(user)
-			if h >= 20 then return itemstack end
-			
-			-- This triggers the MCL hold-to-eat animation and sound
-			return minetest.item_eat(hunger)(itemstack, user, pointed_thing)
-		end,
-		-- Disable instant eating on left click
-		on_use = function(itemstack, user, pointed_thing) return itemstack end,
+		}
 	})
 end
 
@@ -129,12 +118,12 @@ local function register_egg(name, def)
 	minetest.register_craftitem(name .. "_fried", {
 		description = "Fried " .. def.description,
 		inventory_image = def.inventory_image .. "_fried.png",
-		groups = {food_egg = 1, flammable = 2, food = 4, eatable = 1},
+		groups = {food_egg = 1, flammable = 2, food = 2, eatable = 4},
+		_mcl_saturation = 4.8,
 		on_secondary_use = function(itemstack, user, pointed_thing)
 			if mcl_hunger.get_hunger(user) >= 20 then return itemstack end
 			return minetest.item_eat(4)(itemstack, user, pointed_thing)
 		end,
-		on_use = function(itemstack) return itemstack end,
 	})
 
 	minetest.register_craft({
