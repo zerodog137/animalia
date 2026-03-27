@@ -225,6 +225,7 @@ creatura.register_mob("animalia:horse", {
 	is_herding_mob = true,
 
 	-- Animalia Props
+	flee_puncher = true,
 	catch_with_net = true,
 	catch_with_lasso = true,
 	consumable_nodes = {
@@ -409,7 +410,7 @@ creatura.register_mob("animalia:horse", {
 
 	on_punch = function(self, puncher, ...)
 		if self.rider and puncher == self.rider then return end
-		local name = puncher:is_player() and puncher:get_player_name()
+		local name = puncher and puncher:is_player() and puncher:get_player_name()
 		if name
 		and name == self.owner
 		and puncher:get_player_control().sneak then

@@ -586,6 +586,19 @@ function animalia.step_timers(self)
 			end
 		end
 	end
+
+	-- If the mob is panicking and running from a puncher...
+	if self._puncher then
+		local pos = self.object:get_pos()
+		local p_pos = self._puncher:get_pos()
+		
+		-- If the player logged out, died, or is far enough away (out of tracking range)
+		if not p_pos or vector.distance(pos, p_pos) > (self.tracking_range or 8) then
+			-- Forget the puncher and clear the panic AI
+			self._puncher = nil
+			self:clear_utility() 
+		end
+	end
 end
 
 function animalia.do_growth(self, interval)
@@ -755,7 +768,9 @@ end
 function animalia.punch(self, puncher, ...)
 	if self.hp <= 0 then return end
 	creatura.basic_punch_func(self, puncher, ...)
-	self._puncher = puncher
+	if puncher then
+		self._puncher = puncher
+	end
 	if self.flee_puncher
 	and (self:get_utility() or "") ~= "animalia:flee_from_target" then
 		self:clear_utility()
