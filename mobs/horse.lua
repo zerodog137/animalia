@@ -418,6 +418,7 @@ creatura.register_mob("animalia:horse", {
 
 	on_detach_child = function(self, child)
 		if child
+		and child:is_player() -- crash guard
 		and self.rider == child then
 			self.rider = nil
 			child:set_eye_offset({x = 0, y = 0, z = 0}, {x = 0, y = 0, z = 0})
