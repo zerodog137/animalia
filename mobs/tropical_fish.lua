@@ -73,6 +73,9 @@ creatura.register_mob("animalia:tropical_fish", {
 	end,
 
 	on_rightclick = function(self, clicker)
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		if animalia.set_nametag(self, clicker) then
 			return
 		end

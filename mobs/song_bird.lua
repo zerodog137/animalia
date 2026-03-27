@@ -105,6 +105,9 @@ creatura.register_mob("animalia:song_bird", {
 	death_func = animalia.death_func,
 
 	on_rightclick = function(self, clicker)
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		--[[if animalia.feed(self, clicker, false, false) then
 			return
 		end]]

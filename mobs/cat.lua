@@ -158,6 +158,9 @@ creatura.register_mob("animalia:cat", {
 	end,
 
 	on_rightclick = function(self, clicker)
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		local item_name = clicker:get_wielded_item():get_name()
 		if item_name == "animalia:net" then return end
 		local trust = self.trust[clicker:get_player_name()] or 0

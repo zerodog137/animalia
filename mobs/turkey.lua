@@ -117,6 +117,9 @@ creatura.register_mob("animalia:turkey", {
 	end,
 
 	on_rightclick = function(self, clicker)
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		if animalia.feed(self, clicker, false, true) then
 			return
 		end

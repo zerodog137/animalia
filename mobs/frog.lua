@@ -229,6 +229,9 @@ creatura.register_mob("animalia:frog", {
 
 	on_rightclick = function(self, clicker)
 		if self.mesh_no ~= 2 then return end
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		if animalia.feed(self, clicker, false, true) then
 			animalia.add_trust(self, clicker, 1)
 			return

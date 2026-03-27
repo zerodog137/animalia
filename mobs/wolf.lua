@@ -143,6 +143,9 @@ creatura.register_mob("animalia:wolf", {
 	on_rightclick = function(self, clicker)
 		if not clicker:is_player() then return end
 		local name = clicker:get_player_name()
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		if animalia.feed(self, clicker, true, true) then
 			return
 		end

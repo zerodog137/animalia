@@ -113,7 +113,13 @@ creatura.register_mob("animalia:grizzly_bear", {
 		end
 	end,
 
-	on_punch = animalia.punch
+	on_punch = animalia.punch,
+
+	on_rightclick = function(self)
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
+	end
 })
 
 creatura.register_spawn_item("animalia:grizzly_bear", {

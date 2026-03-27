@@ -122,6 +122,9 @@ creatura.register_mob("animalia:cow", {
 	end,
 
 	on_rightclick = function(self, clicker)
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		if animalia.feed(self, clicker, false, true)
 		or animalia.set_nametag(self, clicker) then
 			return

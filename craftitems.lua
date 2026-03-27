@@ -141,6 +141,7 @@ local function register_egg(name, def)
 		type  =  "cooking",
 		recipe  = name,
 		output = name .. "_fried",
+		cooktime = 10
 	})
 end
 
@@ -219,22 +220,67 @@ register_mcl_meat("animalia:venison_cooked", "Venison Steak", "animalia_venison_
 register_mcl_meat("animalia:rat_raw", "Raw Rat", "animalia_rat_raw.png", 1, 0.6)
 register_mcl_meat("animalia:rat_cooked", "Cooked Rat", "animalia_rat_cooked.png", 4, 6.0)
 
+minetest.register_craft({
+	type = "cooking",
+	recipe = "animalia:beef_raw",
+	output = "animalia:beef_cooked",
+	cooktime = 10
+})
+
+minetest.register_craft({
+	type = "cooking",
+	recipe = "animalia:mutton_raw",
+	output = "animalia:mutton_cooked",
+	cooktime = 10
+})
+
+minetest.register_craft({
+	type = "cooking",
+	recipe = "animalia:porkchop_raw",
+	output = "animalia:porkchop_cooked",
+	cooktime = 10
+})
+
+minetest.register_craft({
+	type = "cooking",
+	recipe = "animalia:poultry_raw",
+	output = "animalia:poultry_cooked",
+	cooktime = 10
+})
+
+minetest.register_craft({
+	type = "cooking",
+	recipe = "animalia:venison_raw",
+	output = "animalia:venison_cooked",
+	cooktime = 10
+})
+
+minetest.register_craft({
+	type = "cooking",
+	recipe = "animalia:rat_raw",
+	output = "animalia:rat_cooked",
+	cooktime = 10
+})
+
 register_egg("animalia:chicken_egg", {
 	description = "Chicken Egg",
 	inventory_image = "animalia_egg",
-	mob = "animalia:chicken"
+	mob = "animalia:chicken",
+	cooktime = 10
 })
 
 register_egg("animalia:turkey_egg", {
 	description = "Turkey Egg",
 	inventory_image = "animalia_egg",
-	mob = "animalia:turkey"
+	mob = "animalia:turkey",
+	cooktime = 10
 })
 
 register_egg("animalia:song_bird_egg", {
 	description = "Song Bird Egg",
 	inventory_image = "animalia_song_bird_egg",
-	mob = "animalia:bird"
+	mob = "animalia:bird",
+	cooktime = 10
 })
 
 -- Hunger support --

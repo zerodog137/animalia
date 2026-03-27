@@ -552,6 +552,40 @@ function animalia.step_timers(self)
 	self:memorize("breeding_cooldown", self.breeding_cooldown)
 	self:memorize("trust_cooldown", self.trust_cooldown)
 	self:memorize("_last_active", os.time())
+
+	-- Mineclonia mcl_burning integration
+	if minetest.get_modpath("mcl_burning") then
+		
+		-- Ensure visual_size has a Z dimension so mcl_burning doesn't divide by zero and abort.
+		local props = self.object:get_properties()
+		if not props.visual_size.z or props.visual_size.z == 0 then
+			self.object:set_properties({
+				visual_size = {
+					x = props.visual_size.x,
+					y = props.visual_size.y,
+					z = props.visual_size.x -- Default Z to match X
+				}
+			})
+		end
+
+		mcl_burning.tick(self.object, self.dtime, self)
+		if not mcl_burning.is_burning(self.object) then
+			local pos = self.object:get_pos()
+			if not pos then return end
+			local node_at_pos = minetest.get_node(pos).name
+			local node_below = minetest.get_node({x = pos.x, y = pos.y - 0.5, z = pos.z}).name
+			
+			-- Use Mineclonia's group names: "fire" and "lava"
+			if #mcl_burning.get_touching_nodes(self.object, "group:fire", self) > 0
+			or minetest.get_item_group(node_at_pos, "fire") > 0 then
+				mcl_burning.set_on_fire(self.object, 10)
+			elseif #mcl_burning.get_touching_nodes(self.object, "group:lava", self) > 0
+			or minetest.get_item_group(node_at_pos, "lava") > 0
+			or minetest.get_item_group(node_below, "lava") > 0 then
+				mcl_burning.set_on_fire(self.object, 15)
+			end
+		end
+	end
 end
 
 function animalia.do_growth(self, interval)
@@ -758,6 +792,44 @@ function animalia.eat_turf(mob, pos)
 			return true
 		end
 	end
+end
+
+function animalia.try_ignite(self, clicker)
+	-- If Mineclonia's burning API isn't loaded, don't do anything
+	if not minetest.get_modpath("mcl_burning") then 
+		return false 
+	end
+
+	local item = clicker:get_wielded_item()
+	local item_name = item:get_name()
+	
+	-- Check for Mineclonia fire-starting items
+	if item_name == "mcl_fire:flint_and_steel" or item_name == "mcl_fire:fire_charge" then
+		
+		-- Ignite the mob (10 seconds)
+		mcl_burning.set_on_fire(self.object, 10)
+		
+		-- Play ignition sound
+		minetest.sound_play("fire_ignite", {
+			pos = self.object:get_pos(), 
+			gain = 1.0, 
+			max_hear_distance = 16
+		}, true)
+		
+		-- Handle item wear/consumption for non-creative players
+		if not minetest.is_creative_enabled(clicker:get_player_name()) then
+			if item_name == "mcl_fire:flint_and_steel" then
+				item:add_wear(65535 / 64) -- Standard tool wear
+			else
+				item:take_item() -- Consume fire charge
+			end
+			clicker:set_wielded_item(item)
+		end
+		
+		return true -- Successfully ignited
+	end
+	
+	return false -- Item was not a fire starter
 end
 
 --------------

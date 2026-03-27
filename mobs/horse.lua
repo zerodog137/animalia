@@ -366,6 +366,9 @@ creatura.register_mob("animalia:horse", {
 	end,
 
 	on_rightclick = function(self, clicker)
+		if animalia.try_ignite(self, clicker) then
+			return
+		end
 		if animalia.feed(self, clicker, false, true) then
 			return
 		end
@@ -425,7 +428,7 @@ creatura.register_mob("animalia:horse", {
 			child:set_properties({visual_size = {x = 1, y = 1}})
 			animalia.animate_player(child, "stand", 30)
 		end
-	end
+	end,
 })
 
 creatura.register_spawn_item("animalia:horse", {
