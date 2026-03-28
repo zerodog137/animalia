@@ -27,7 +27,8 @@ local function register_mcl_meat(name, desc, img, hunger, sat)
 			eatable = hunger,
 			flammable = 2, 
 			meat = 1, 
-			food_meat = 1
+			food_meat = 1,
+			smoker_cookable = 1
 		}
 	})
 end
@@ -671,6 +672,15 @@ minetest.register_craft({
 		{"", "farming:string", "farming:string"},
 		{"", "group:leather", "farming:string"},
 		{"farming:string", "", ""}
+	}
+})
+
+minetest.register_craft({
+	output = "animalia:lasso",
+	recipe = {
+		{"", "mcl_mobitems:string", "mcl_mobitems:string"},
+		{"", "mcl_mobitems:leather", "mcl_mobitems:string"},
+		{"mcl_mobitems:string", "", ""},
 	}
 })
 
