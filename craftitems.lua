@@ -28,7 +28,8 @@ local function register_mcl_meat(name, desc, img, hunger, sat)
 			flammable = 2, 
 			meat = 1, 
 			food_meat = 1,
-			smoker_cookable = 1
+			smoker_cookable = 1,
+			campfire_cookable = 1
 		}
 	})
 end

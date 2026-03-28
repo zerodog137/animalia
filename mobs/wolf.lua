@@ -109,6 +109,12 @@ creatura.register_mob("animalia:wolf", {
 		self.order = self:recall("order") or "wander"
 		self.owner = self:recall("owner") or nil
 		self.enemies = nil
+
+		-- Only solid when following
+		local is_following = (self.order == "follow")
+		self.object:set_properties({collide_with_objects = is_following})
+		self.fancy_collide = is_following
+
 		if self.owner
 		and minetest.get_player_by_name(self.owner) then
 			if not is_value_in_table(animalia.pets[self.owner], self.object) then
@@ -159,16 +165,31 @@ creatura.register_mob("animalia:wolf", {
 			if order == "wander" then
 				minetest.chat_send_player(name, "Wolf is following")
 				self.order = "follow"
+
+				-- Turn Collision ON
+				self.object:set_properties({collide_with_objects = true})
+				self.fancy_collide = true
+
 				self:initiate_utility("animalia:follow_player", self, clicker, true)
 				self:set_utility_score(0.7)
 			elseif order == "follow" then
 				minetest.chat_send_player(name, "Wolf is sitting")
 				self.order = "sit"
+
+				-- Turn Collision OFF
+				self.object:set_properties({collide_with_objects = false})
+				self.fancy_collide = false
+
 				self:initiate_utility("animalia:stay", self)
 				self:set_utility_score(0.5)
 			else
 				minetest.chat_send_player(name, "Wolf is wandering")
 				self.order = "wander"
+
+				-- Turn Collision OFF
+				self.object:set_properties({collide_with_objects = false})
+				self.fancy_collide = false
+
 				self:set_utility_score(0)
 			end
 			self:memorize("order", self.order)
